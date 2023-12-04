@@ -4,12 +4,14 @@
 
 #ifndef LAB_5_PLANET_H
 #define LAB_5_PLANET_H
+
 #include <iostream>
+#include <cmath>
 
 
 class Planet {
-
-    std::string Name;
+private:
+    char *Name;
 
     double x;
     double y;
@@ -25,15 +27,21 @@ public:
 
     //constructors and destructor
 
-    explicit Planet();
+    Planet();
 
-    explicit Planet(const std::string &name, double x, double y, double z, double weight, double volume, bool availability);
+    Planet(char *name, double x, double y, double z, double weight, double volume, bool availability);
+
+    Planet(const Planet &other);
+
+    Planet &operator=(const Planet &other);
 
     ~Planet();
 
-    std::string& get_name();
+    //методы для показа/изменения полей класса
 
-    void set_name(const std::string &name);
+    char* get_name() const;
+
+    void set_name(const char *name);
 
     double get_x() const;
 
@@ -58,6 +66,22 @@ public:
     bool get_avail() const;
 
     void set_avail(bool availability_);
+
+    //методы для показа других возможностей класса
+
+    double distance(const Planet &other) const;
+
+    double distance(double x, double y, double z) const;
+
+    double density() const;
+
+    bool is_gas_giant() const;
+
+    double radius() const;
+
+    static void sort_planets(Planet* list, size_t count);
+
+    static size_t count_of_planet_closer_than(Planet* list, size_t N, size_t count);
 };
 
 

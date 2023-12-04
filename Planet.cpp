@@ -4,11 +4,16 @@
 
 #include "Planet.h"
 #include <iostream>
+#include <cmath>
+#include <cstring>
+
+#define MAX_LENGTH 100
+#define Earth_mass 5.974 * pow(10, 24)
+#define max_density 1.6 * pow(10, 12)
 //constructor and destructor
 
-Planet::Planet()
-{
-    this->Name = "standart name";
+Planet::Planet() {
+    this->Name = "standart";
 
     this->x = 0.0;
     this->y = 0.0;
@@ -21,9 +26,10 @@ Planet::Planet()
     this->availability = false;
 }
 
-Planet::Planet(const std::string &name, double x, double y, double z, double weight, double volume, bool availability)
-{
-    this->Name = name;
+Planet::Planet(char* name, double x, double y, double z, double weight, double volume, bool availability) {
+
+    this->Name = new char[std::strlen(name)+1];
+    std::strcpy(this->Name, name);
 
     this->x = x;
     this->y = y;
@@ -36,29 +42,50 @@ Planet::Planet(const std::string &name, double x, double y, double z, double wei
     this->availability = availability;
 }
 
-Planet::~Planet()
+Planet::Planet(const Planet &other)
 {
-    this->Name = "";
+    this->Name = new char[strlen(other.Name)+1];
+    std::strcpy(this->Name, other.Name);
+    x = other.x;
+    y = other.y;
+    z = other.z;
+    weight = other.weight;
+    volume = other.volume;
 
-    this->x = 0.0;
-    this->y = 0.0;
-    this->z = 0.0;
-
-    this->volume = 0.0;
-
-    this->weight = 0.0;
-
-    this->availability = false;
 }
 
-std::string& Planet::get_name()
+Planet& Planet::operator=(const Planet &other)
+{
+    if (this != &other) {
+        Name = new char[strlen(other.Name)+1];
+        std::strcpy(this->Name, other.Name);
+        x = other.x;
+        y = other.y;
+        z = other.z;
+        weight = other.weight;
+        volume = other.volume;
+    }
+    return *this;
+}
+
+Planet::~Planet()
+{
+    delete [] Name;
+}
+
+char* Planet::get_name() const
 {
     return Name;
 }
 
-void Planet::set_name(const std::string &name)
-{
-    this->Name = name;
+void Planet::set_name(const char *name) {
+    delete[] Name;
+    if (name != nullptr) {
+        Name = new char[std::strlen(name) + 1];
+        std::strcpy(this->Name, name);
+    } else {
+        Name = nullptr;
+    }
 }
 
 double Planet::get_x() const
@@ -71,8 +98,7 @@ void Planet::set_x(const double cord_x)
     this->x = cord_x;
 }
 
-double Planet::get_y() const
-{
+double Planet::get_y() const {
     return y;
 }
 
@@ -96,8 +122,9 @@ double Planet::get_weight() const
     return weight;
 }
 
-void Planet::set_weight(const double weight_) {
-    this->weight = weight_;
+void Planet::set_weight(const double weight)
+{
+    this->weight = weight;
 }
 
 double Planet::get_volume() const
@@ -105,8 +132,9 @@ double Planet::get_volume() const
     return volume;
 }
 
-void Planet::set_volume(const double volume_) {
-    this->volume = volume_;
+void Planet::set_volume(const double volume)
+{
+    this->volume = volume;
 }
 
 bool Planet::get_avail() const
@@ -114,8 +142,63 @@ bool Planet::get_avail() const
     return availability;
 }
 
-void Planet::set_avail(bool availability_)
+void Planet::set_avail(bool availability)
 {
-    availability = availability_;
+    availability = availability;
 }
 
+double Planet::distance(const Planet &other) const
+{
+    double result = sqrt(pow(x - other.x, 2) + pow(y - other.y, 2) + pow(z - other.z, 2));
+    return result;
+}
+
+double Planet::distance(double x, double y, double z) const
+{
+    double result = sqrt(pow(this->x - x, 2) + pow(this->y - y, 2) + pow(this->z - z, 2));
+    return result;
+}
+
+double Planet::density() const
+{
+    return weight / volume;
+}
+
+bool Planet::is_gas_giant() const
+{
+    if (this->density() < max_density && weight > Earth_mass)
+        return true;
+    else
+        return false;
+}
+
+double Planet::radius() const
+{
+    double result = pow(((3 * weight) / (4 * 3.14156535 * this->density())), (1.0 / 3));
+    return result;
+}
+
+
+void Planet::sort_planets(Planet* list, size_t count)
+{
+    for (size_t i = 0; i < count; ++i){
+        for (size_t j = 0; j < count - 1 - i; ++j){
+            if ( list[j].density() < list[j + 1].density() ){
+                Planet temp;
+                temp = list[j];
+                list[j] = list[j+1];
+                list[j+1] = temp;
+            }
+        }
+    }
+}
+
+size_t Planet::count_of_planet_closer_than(Planet* list, size_t N, size_t count)
+{
+    size_t result = 0;
+    for (size_t i = 0; i < count; ++i){
+        if (list[i].distance(0.0, 0.0, 0.0) < N)
+            result++;
+    }
+    return result;
+}
