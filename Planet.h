@@ -81,7 +81,9 @@ public:
 
     static void sort_planets(Planet* list, size_t count);
 
-    static size_t count_of_planet_closer_than(Planet* list, size_t N, size_t count);
+    static size_t count_of_planet_closer_then(Planet* list, size_t N, size_t count);
+
+    static size_t average_weight_of_availability(Planet* list, size_t count);
 };
 
 

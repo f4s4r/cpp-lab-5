@@ -13,7 +13,7 @@
 //constructor and destructor
 
 Planet::Planet() {
-    this->Name = "standart";
+    this->Name = new char[0];
 
     this->x = 0.0;
     this->y = 0.0;
@@ -70,7 +70,15 @@ Planet& Planet::operator=(const Planet &other)
 
 Planet::~Planet()
 {
-    delete [] Name;
+    if (this->volume != 0) delete [] Name;
+    this->x = 0.0;
+    this->y = 0.0;
+    this->z = 0.0;
+
+    this->volume = 0.0;
+
+    this->weight = 0.0;
+
 }
 
 char* Planet::get_name() const
@@ -132,9 +140,9 @@ double Planet::get_volume() const
     return volume;
 }
 
-void Planet::set_volume(const double volume)
+void Planet::set_volume(const double volume_)
 {
-    this->volume = volume;
+    volume = volume_;
 }
 
 bool Planet::get_avail() const
@@ -142,9 +150,9 @@ bool Planet::get_avail() const
     return availability;
 }
 
-void Planet::set_avail(bool availability)
+void Planet::set_avail(bool availability_)
 {
-    availability = availability;
+    availability = availability_;
 }
 
 double Planet::distance(const Planet &other) const
@@ -193,7 +201,7 @@ void Planet::sort_planets(Planet* list, size_t count)
     }
 }
 
-size_t Planet::count_of_planet_closer_than(Planet* list, size_t N, size_t count)
+size_t Planet::count_of_planet_closer_then(Planet* list, size_t N, size_t count)
 {
     size_t result = 0;
     for (size_t i = 0; i < count; ++i){
@@ -201,4 +209,31 @@ size_t Planet::count_of_planet_closer_than(Planet* list, size_t N, size_t count)
             result++;
     }
     return result;
+}
+
+size_t Planet::average_weight_of_availability(Planet* list, size_t count)
+{
+    if (count == 0 || list == NULL) {
+        std::cerr << "invalid list or number of member is function average_weight_of_availability" << std::endl;
+        return 0;
+    }
+    size_t summ = 0;
+    size_t k = 0;
+    size_t test = 0;
+    for (size_t j = 0; j < count; ++j){
+        (list[j].get_avail()) ? test++ : test;
+    }
+    if (test == 0)
+    {std::cerr << "Availability planets are not include in list " << std::endl;
+        return 0;
+    }
+    for (size_t i = 0; i < count; ++i){
+        if (list[i].get_avail())
+        {
+            summ += list[i].get_weight();
+            k += 1;
+//            std::cout << "234234" << std::endl;
+        }
+    }
+    return (summ / k);
 }

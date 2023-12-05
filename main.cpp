@@ -70,8 +70,8 @@ int main() {
     Planet planet3;
     Planet planet4;
 
-    planet1.set_weight(100);
-    planet1.set_volume(10);
+    planet1.set_weight(100.0);
+    planet1.set_volume(10.0);
 
     planet2.set_weight(50);
     planet2.set_volume(10);
@@ -98,7 +98,6 @@ int main() {
     std::cout << "Changed massive:" << std::endl;
     for (size_t i = 0; i < 4; ++i) // вывод измененных плотностей
         std::cout << list_of_planet[i].density() << std::endl;
-    delete [] list_of_planet;
 
 
     // Количество планет на расстоянии меньшем чем N единиц
@@ -131,6 +130,21 @@ int main() {
     another_list_of_planets[2] = planet7;
     another_list_of_planets[3] = planet8;
 
-    std::cout << Planet::count_of_planet_closer_than(another_list_of_planets, 100, 4) << std::endl;
-    delete [] another_list_of_planets;
+    double N = 50;
+
+    std::cout << "Count of planet, that closer that " << N << "km is " << Planet::count_of_planet_closer_then(another_list_of_planets, N, 4) << std::endl;    //демонстрации функции average_weight_of_availability()
+
+    another_list_of_planets[0].set_avail(true);
+    another_list_of_planets[1].set_avail(true);
+    another_list_of_planets[2].set_avail(false);
+    another_list_of_planets[3].set_avail(true);
+
+    another_list_of_planets[0].set_weight(100);
+    another_list_of_planets[1].set_weight(200);
+    another_list_of_planets[2].set_weight(50);
+    another_list_of_planets[3].set_weight(400);
+
+    std::cout << "Average weight of planet, that are availability is " << Planet::average_weight_of_availability(another_list_of_planets, 4) << std::endl;
+
+    return 0;
 }
